@@ -1,5 +1,8 @@
 package org.datastructures;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class LinkedList {
 
     private Node head;
@@ -185,16 +188,94 @@ public class LinkedList {
         }
     }
 
+    public Node findKthNodeFromLast(int k) {
+
+        Node p1 = head;
+        Node p2 = head;
+
+        for(int i=0;i<k-1;i++) {
+            if(p2.next==null) {
+                return null;
+            }
+            p2=p2.next;
+        }
+
+        while(p2.next!=null) {
+            p1=p1.next;
+            p2=p2.next;
+        }
+        return p1;
+    }
+
+    public void removeDuplicates() {
+        HashSet<Integer> hashSet = new HashSet<>();
+        Node curr = head;
+        Node prev = null;
+
+        while (curr != null) {
+
+            // Check if the element is already in the hash table
+            if (hashSet.contains(curr.value)) {
+
+                // Element is present, remove it
+                prev.next = curr.next;
+            } else {
+                // Element is not present, add it to hash table
+                hashSet.add(curr.value);
+                prev = curr;
+            }
+            curr = curr.next;
+        }
+    }
+
+    /*
+    Linked List  3 -> 8 -> 5 -> 10 -> 2 -> 1
+    First Partition  0 -> 3 -> 2 -> 1
+    Second Partition 0 -> 8 -> 5 -> 10
+    Combined 3 -> 2 -> 1 -> 8 -> 5 -> 10
+     */
+    public void partitionList(int x) {
+        if (head == null) return;
+
+        Node dummy1 = new Node(0);
+        Node dummy2 = new Node(0);
+        Node prev1 = dummy1;
+        Node prev2 = dummy2;
+        Node current = head;
+
+        while (current != null) {
+            if (current.value < x) {
+                prev1.next = current;
+                prev1 = current;
+            } else {
+                prev2.next = current;
+                prev2 = current;
+            }
+            current = current.next;
+        }
+
+        prev2.next = null;
+        prev1.next = dummy2.next;
+
+        head = dummy1.next;
+    }
+
     public static void main(String[] args) throws Exception {
 
-        LinkedList ll = new LinkedList(10);
-        ll.prepend(4);
+        LinkedList ll = new LinkedList(1);
+        ll.append(2);
+        ll.append(3);
+        ll.append(1);
+        ll.append(4);
+        ll.append(2);
         ll.append(5);
-        ll.append(9);
-        ll.prepend(7);
         ll.printList();
-        System.out.println(ll.get(3));
-        ll.reverse();
+//        System.out.println(ll.get(3));
+//        ll.reverse();
+//        ll.printList();
+//        Node k = ll.findKthNodeFromLast(3);
+//        System.out.println(k.value);
+        ll.removeDuplicates();
         ll.printList();
     }
 }
