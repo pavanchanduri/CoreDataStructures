@@ -1,7 +1,6 @@
 package org.datastructures;
 
 import java.util.HashSet;
-import java.util.Set;
 
 public class LinkedList {
 
@@ -70,7 +69,7 @@ public class LinkedList {
         length = 0;
     }
 
-    public void append(int value) {
+    public LinkedList append(int value) {
         Node newNode = new Node(value);
         if (length == 0) {
             head = newNode;
@@ -80,6 +79,7 @@ public class LinkedList {
             tail = newNode;
         }
         length++;
+        return this;
     }
 
     public Node removeLast() {
@@ -100,7 +100,7 @@ public class LinkedList {
         return temp;
     }
 
-    public void prepend(int value) {
+    public LinkedList prepend(int value) {
         Node newNode = new Node(value);
         if (length == 0) {
             head = newNode;
@@ -110,6 +110,7 @@ public class LinkedList {
             head = newNode;
         }
         length++;
+        return this;
     }
 
     public Node removeFirst() {
@@ -260,22 +261,85 @@ public class LinkedList {
         head = dummy1.next;
     }
 
-    public static void main(String[] args) throws Exception {
+    public void reverseBetween(int startIndex, int endIndex) {
 
+        if(head==null) return;
+
+        Node dummyNode = new Node(0);
+        dummyNode.next = head;
+        Node previousNode = dummyNode; //track of the node before the segment to be reversed
+        for(int i=0;i<startIndex;i++) {
+            previousNode = previousNode.next; //Position this just before the start node of the segment
+        }
+        Node currentNode = previousNode.next;
+
+        for(int i=0;i<endIndex-startIndex;i++) {
+            Node nodeToMove = currentNode.next; //Node to cut from the segment and place at the front
+            currentNode.next = nodeToMove.next;
+            nodeToMove.next = previousNode.next;
+            previousNode.next = nodeToMove;
+        }
+        head = dummyNode.next;
+    }
+
+    public void swapPairs() {
+        //   +===================================================+
+        //   |                                                   |
+        //   | Description:                                      |
+        //   | - Swaps every two adjacent nodes in the linked    |
+        //   |   list.                                           |
+        //   | - The method modifies the list in place.          |
+        //   |                                                   |
+        //   | Behavior:                                         |
+        //   | - A dummy node is used to simplify swapping the   |
+        //   |   first pair.                                     |
+        //   | - In each iteration, two nodes (`first` and       |
+        //   |   `second`) are swapped by adjusting pointers.    |
+        //   | - The `previous` pointer helps reconnect the      |
+        //   |   swapped pairs to the rest of the list.          |
+        //   | - The `first` pointer then moves forward two      |
+        //   |   nodes at a time.                                |
+        //   | - At the end, `head` is updated to point to the   |
+        //   |   new first node.                                 |
+        //   +===================================================+
+
+        Node dummyNode = new Node(0);
+        dummyNode.next = head;
+        Node previous = dummyNode;
+        Node first = head;
+        while(first!=null&&first.next!=null) {
+            Node second = first.next;
+
+            //Swap the nodes
+            first.next = second.next;
+            second.next = first;
+            previous.next = second;
+
+            //Move pointers
+            previous = first;
+            first = first.next;
+        }
+        head=dummyNode.next;
+    }
+
+    public static void main(String[] args) throws Exception {
         LinkedList ll = new LinkedList(1);
-        ll.append(2);
-        ll.append(3);
-        ll.append(1);
-        ll.append(4);
-        ll.append(2);
-        ll.append(5);
+        ll
+                .append(2).append(3).append(3).append(1)
+                .append(3).append(4).append(5).append(6)
+                .append(7).append(6).append(8).append(9)
+                .append(10).prepend(0);
         ll.printList();
-//        System.out.println(ll.get(3));
-//        ll.reverse();
-//        ll.printList();
-//        Node k = ll.findKthNodeFromLast(3);
-//        System.out.println(k.value);
+        ll.reverse();
+        ll.printList();
+        ll.reverse();
         ll.removeDuplicates();
+        ll.printList();
+        ll.reverseBetween(2,7);
+        ll.printList();
+        ll.swapPairs();
+        ll.printList();
+        ll.partitionList(8);
         ll.printList();
     }
 }
