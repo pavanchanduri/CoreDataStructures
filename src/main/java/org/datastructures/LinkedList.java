@@ -178,7 +178,7 @@ public class LinkedList {
         Node temp = getHead();
         head = getTail();
         tail = temp;
-        Node after = temp.next;
+        Node after;
         Node before = null;
         for(int i=0;i<length;i++) {
             after = temp.next;

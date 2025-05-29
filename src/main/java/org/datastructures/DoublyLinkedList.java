@@ -298,6 +298,21 @@ public class DoublyLinkedList {
         head.prev = null;
     }
 
+    public void reverse() {
+        Node temp = getHead();
+        head = tail;
+        tail = temp;
+        Node after;
+        Node before = null;
+        for(int i=0;i<length;i++) {
+            after = temp.next;
+            temp.next = before;
+            temp.prev = after;
+            before = temp;
+            temp = after;
+        }
+    }
+
     public static void main(String[] args) {
         DoublyLinkedList dll = new DoublyLinkedList(3);
         dll.append(8).append(5).append(10).append(2).append(1);
