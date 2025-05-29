@@ -11,7 +11,6 @@ public class LinkedList {
     class Node {
         int value;
         Node next;
-
         Node(int value) {
             this.value = value;
         }
@@ -190,17 +189,14 @@ public class LinkedList {
     }
 
     public Node findKthNodeFromLast(int k) {
-
         Node p1 = head;
         Node p2 = head;
-
         for(int i=0;i<k-1;i++) {
             if(p2.next==null) {
                 return null;
             }
             p2=p2.next;
         }
-
         while(p2.next!=null) {
             p1=p1.next;
             p2=p2.next;
@@ -212,12 +208,9 @@ public class LinkedList {
         HashSet<Integer> hashSet = new HashSet<>();
         Node curr = head;
         Node prev = null;
-
         while (curr != null) {
-
             // Check if the element is already in the hash table
             if (hashSet.contains(curr.value)) {
-
                 // Element is present, remove it
                 prev.next = curr.next;
             } else {
@@ -237,13 +230,11 @@ public class LinkedList {
      */
     public void partitionList(int x) {
         if (head == null) return;
-
         Node dummy1 = new Node(0);
         Node dummy2 = new Node(0);
         Node prev1 = dummy1;
         Node prev2 = dummy2;
         Node current = head;
-
         while (current != null) {
             if (current.value < x) {
                 prev1.next = current;
@@ -254,17 +245,13 @@ public class LinkedList {
             }
             current = current.next;
         }
-
         prev2.next = null;
         prev1.next = dummy2.next;
-
         head = dummy1.next;
     }
 
     public void reverseBetween(int startIndex, int endIndex) {
-
         if(head==null) return;
-
         Node dummyNode = new Node(0);
         dummyNode.next = head;
         Node previousNode = dummyNode; //track of the node before the segment to be reversed
@@ -272,7 +259,6 @@ public class LinkedList {
             previousNode = previousNode.next; //Position this just before the start node of the segment
         }
         Node currentNode = previousNode.next;
-
         for(int i=0;i<endIndex-startIndex;i++) {
             Node nodeToMove = currentNode.next; //Node to cut from the segment and place at the front
             currentNode.next = nodeToMove.next;
@@ -309,12 +295,10 @@ public class LinkedList {
         Node first = head;
         while(first!=null&&first.next!=null) {
             Node second = first.next;
-
             //Swap the nodes
             first.next = second.next;
             second.next = first;
             previous.next = second;
-
             //Move pointers
             previous = first;
             first = first.next;
