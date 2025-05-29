@@ -247,6 +247,57 @@ public class DoublyLinkedList {
         prev2.next = null;
     }
 
+    public void reverseBetween(int startIndex, int endIndex) {
+
+        if (head == null || startIndex == endIndex) {
+            return;
+        }
+        Node dummyNode = new Node(0);
+        dummyNode.next = head;
+        head.prev = dummyNode;
+        Node previousNode = dummyNode; //track of the node before the segment to be reversed
+        for(int i=0;i<startIndex;i++) {
+            previousNode = previousNode.next; //Position this just before the start node of the segment
+        }
+        Node currentNode = previousNode.next;
+        for(int i=0;i<endIndex-startIndex;i++) {
+            Node nodeToMove = currentNode.next; //Node to cut from the segment and place at the front
+            currentNode.next = nodeToMove.next;
+            if(nodeToMove.next!=null) {
+                nodeToMove.next.prev = currentNode;
+            }
+            // Move nodeToMove to the front of the sublist
+            nodeToMove.next = previousNode.next;
+            previousNode.next.prev = nodeToMove;
+            previousNode.next = nodeToMove;
+            nodeToMove.prev = previousNode;
+        }
+        head = dummyNode.next;
+        head.prev = null;
+    }
+
+    public void swapPairs() {
+        if(head==null) return;
+        Node dummy = new Node(0);
+        dummy.next = head;
+        head.prev = dummy;
+        Node first = head;
+        while(first!=null && first.next!=null) {
+            Node second = first.next;
+            first.next = second.next;
+            if(second.next!=null) {
+                second.next.prev = first;
+            }
+            second.next = first;
+            second.prev = first.prev;
+            first.prev = second;
+            second.prev.next = second;
+            first = first.next;
+        }
+        head = dummy.next;
+        head.prev = null;
+    }
+
     public static void main(String[] args) {
         DoublyLinkedList dll = new DoublyLinkedList(3);
         dll.append(8).append(5).append(10).append(2).append(1);
