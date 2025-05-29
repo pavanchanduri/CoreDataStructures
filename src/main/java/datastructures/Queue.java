@@ -1,4 +1,4 @@
-package org.datastructures;
+package datastructures;
 
 public class Queue {
 
