@@ -1,6 +1,6 @@
 package datastructures;
 
-public class Stack {
+public class Stack<T> {
 
     /*
     1. Use Linked List
@@ -13,21 +13,23 @@ public class Stack {
     private Node top;
     private int height;
 
-    public Stack(int value) {
+    public Stack() {}
+
+    public Stack(Object value) {
         top = new Node(value);
         height = 1;
     }
 
     static class Node {
-        int value;
+        Object value;
         Node next;
 
-        public Node(int value) {
+        public <T> Node(T value) {
             this.value = value;
         }
     }
 
-    public void push(int value) {
+    public <T> void push(T value) {
         Node newNode = new Node(value);
         if (top != null) {
             newNode.next = top;
@@ -36,7 +38,7 @@ public class Stack {
         height++;
     }
 
-    public boolean search(int value) throws Exception {
+    public boolean search(T value) throws Exception {
         if(top == null) {
             throw new Exception("Stack is Empty");
         } else {
@@ -51,34 +53,39 @@ public class Stack {
         return false;
     }
 
-    public int getTop() {
-        return top.value;
+    public T getTop() {
+        return (T) top.value;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public void pop() throws Exception {
+    public Node pop() throws Exception {
+        Node temp;
+        Node result;
         if(top==null) {
             throw new Exception("Stack is Empty");
         } else if(height==1) {
+            result = top;
             top = null;
             height = 0;
         } else {
-            Node temp = top.next;
+            result = top;
+            temp = top.next;
             top.next = null;
             top = temp;
-            height++;
+            height--;
         }
+        return result;
     }
 
-    public int peek() throws Exception {
+    public T peek() throws Exception {
 
         if(height==0) {
             throw new Exception("Stack is Empty");
         } else {
-            return top.value;
+            return (T) top.value;
         }
     }
 
@@ -101,8 +108,27 @@ public class Stack {
         }
     }
 
+    public static boolean isBalancedParentheses(String input) throws Exception {
+        Stack<Character> stack = new Stack<>();
+        for(char ch:input.toCharArray()) {
+            if(ch=='('||ch=='{'||ch=='[') {
+                stack.push(ch);
+            } else {
+                if(stack.isEmpty()) {
+                    return false;
+                }
+                if((stack.peek()=='(' && ch==')') ||
+                        (stack.peek()=='[' && ch==']') ||
+                        (stack.peek()=='{' && ch=='}')) {
+                    stack.pop();
+                }
+            }
+        }
+        return stack.isEmpty();
+    }
+
     public static void main(String[] args) throws Exception {
-        Stack stack = new Stack(1);
+        Stack<Integer> stack = new Stack<>(1);
         stack.push(2);
         stack.push(3);
         stack.pop();
@@ -112,5 +138,8 @@ public class Stack {
         stack.printStack();
         System.out.println(stack.peek());
         System.out.println(stack.search(4));
+
+        String parantheses = "()[]{}[";
+        System.out.println(isBalancedParentheses(parantheses));
     }
 }
