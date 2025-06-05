@@ -1,5 +1,10 @@
 package datastructures;
 
+import java.util.ArrayList;
+import java.util.Stack;
+import java.util.Queue;
+import java.util.LinkedList;
+
 public class BinarySearchTree {
 
     Node root;
@@ -251,6 +256,143 @@ public class BinarySearchTree {
         return Math.max(findHeight(root.left), findHeight(root.right)) + 1;
     }
 
+    public boolean isValidBST() {
+        ArrayList<Integer> inorderResult = DFSInOrder();
+
+        for(int i=0;i<inorderResult.size()-1;i++) {
+            if(inorderResult.get(i)>inorderResult.get(i+1)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    ArrayList<Integer> resultList = new ArrayList<>();
+    public ArrayList<Integer> DFSInOrder() {
+        DFSInOrder(root);
+        return resultList;
+    }
+
+    private void DFSInOrder(Node node) {
+        if(node==null) {
+            return;
+        }
+        DFSInOrder(node.left);
+        resultList.add(node.value);
+        DFSInOrder(node.right);
+    }
+
+
+    private Node sortedArrayToBST(int[] nums, int left, int right) {
+        if(left>right) return null;
+        int mid = (left+right)/2;
+
+        Node root = new Node(nums[mid]);
+
+        // Create left subtree
+        root.left = sortedArrayToBST(nums, left, mid - 1);
+
+        // Create right subtree
+        root.right = sortedArrayToBST(nums, mid + 1, right);
+
+        return root;
+
+    }
+
+    public void sortedArrayToBST(int[] nums) {
+        root = sortedArrayToBST(nums, 0, nums.length-1);
+    }
+
+    private Node invertTree(Node node) {
+        // Check if the current node is null. This condition is crucial because it
+        // serves as the termination condition for the recursion. When the method
+        // encounters a null, it means it has reached beyond the leaf nodes of the
+        // tree (i.e., it's at a position where a leaf node would have a child if
+        // leaf nodes could have children). Since there's nothing to invert at this
+        // point, the method simply returns null without making any changes.
+        if (node == null) return null;
+
+        // Temporarily store the current node's left child in a variable named 'temp'.
+        // This step is necessary because the inversion process will overwrite the
+        // 'left' pointer of the current node with the value of its 'right' pointer.
+        // Storing the original left child allows us to access it later when we need
+        // to set the current node's right child. Without this temporary storage, the
+        // original left child would be lost after setting the current node's left child
+        // to the inverted right subtree.
+        Node temp = node.left;
+
+        // Recursively invert the right subtree. The method calls itself with the
+        // current node's right child as the argument. This recursive call will
+        // continue down the right subtree, inverting each node's children along the
+        // way. Once the inversion of the right subtree is complete, the method
+        // sets the current node's left child to the result. This effectively moves
+        // the entire right subtree to the left side of the current node. The
+        // recursion ensures that every node in the right subtree is processed
+        // and inverted in a bottom-up manner, starting from the rightmost leaf nodes.
+        node.left = invertTree(node.right);
+
+        // Recursively invert the original left subtree, which is now stored in 'temp'.
+        // This step is similar to the previous one but operates on the original left
+        // subtree of the current node. By calling 'invertTree' with 'temp' (the
+        // original left child) as the argument, the method inverts the left subtree
+        // and sets the result as the current node's right child. This moves the entire
+        // left subtree, now inverted, to the right side of the current node. As with
+        // the right subtree, the inversion is performed recursively in a bottom-up
+        // fashion, ensuring that the structure of the subtree is correctly mirrored.
+        node.right = invertTree(temp);
+
+        // Return the current node. By this point in the method, the current node's
+        // left and right children have been swapped, and the subtrees rooted at
+        // those children have been inverted. Returning the current node allows the
+        // parent call (one level up in the recursion stack) to receive the inverted
+        // subtree and continue the inversion process up the tree. This step is
+        // repeated until the recursion unwinds back to the root of the tree,
+        // at which point the entire tree has been inverted.
+        return node;
+    }
+
+    public void invertTree() {
+        invertTree(root);
+    }
+
+    public ArrayList<Integer> breadthFirstTraversal() {
+        Queue<Node> queue = new LinkedList<>();
+        ArrayList<Integer> resultList = new ArrayList<>();
+        Node temp = root;
+        queue.add(temp);
+        while(!queue.isEmpty()) {
+            temp = queue.remove();
+            resultList.add(temp.value);
+            if(temp.left!=null) {
+                queue.add(temp.left);
+            }
+            if(temp.right!=null) {
+                queue.add(temp.right);
+            }
+        }
+        return resultList;
+    }
+
+    public Integer kthSmallest(int k) {
+        Stack<Node> stack = new Stack<>();
+        Node node = this.root;
+
+        while (!stack.isEmpty() || node != null) {
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+            node = stack.pop();
+            k -= 1;
+            if (k == 0) {
+                return node.value;
+            }
+            node = node.right;
+        }
+        return null;
+    }
+
+
     public static void main(String[] args) {
         BinarySearchTree bst = new BinarySearchTree();
         bst.insert(47);
@@ -262,6 +404,7 @@ public class BinarySearchTree {
         bst.insert(42);
         bst.insert(27);
         bst.rInsert(17);
+        System.out.println(bst.breadthFirstTraversal().stream().toList());
         System.out.println("Inorder Traversal of the Tree: ");
         bst.inorderTraversal(bst.root);
         System.out.println("\nPreorder Traversal of the Tree: ");
@@ -278,5 +421,12 @@ public class BinarySearchTree {
         System.out.println(bst.deleteNode(47));
         bst.rDeleteNode(17);
         System.out.println(bst.contains(17));
+        bst.invertTree();
+        System.out.println(bst.root.left.value);
+
+        int[] arr = {1,2,3,4,5,6,7,8,9,10};
+        bst.sortedArrayToBST(arr);
+        System.out.println(bst.root.value);
+        System.out.println(bst.isValidBST());
     }
 }
