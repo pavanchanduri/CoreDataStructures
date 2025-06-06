@@ -8,6 +8,7 @@ import java.util.LinkedList;
 public class BinarySearchTree {
 
     Node root;
+    ArrayList<Integer> resultList = new ArrayList<>();
 
     class Node {
         private int value;
@@ -102,11 +103,11 @@ public class BinarySearchTree {
     }
 
     public int maxValue(Node currentNode) {
-        // Traverse left subtree until null is encountered
+        // Traverse right subtree until null is encountered
         while (currentNode.right != null) {
             currentNode = currentNode.right;
         }
-        // Return the value of the leftmost node
+        // Return the value of the rightmost node
         return currentNode.value;
     }
 
@@ -207,58 +208,73 @@ public class BinarySearchTree {
         rDeleteNode(root, value);
     }
 
-    private Node rDeleteNode(Node node, int value) {
-        if(node==null) return null;
+    private Node rDeleteNode(Node currentNode, int value) {
+        // Base case, tree is empty
+        if (currentNode == null) return null;
 
-        if(value<node.value) {
-            node.left = rDeleteNode(node.left, value);
-        } else if(value>node.value) {
-            node.right = rDeleteNode(node.right, value);
+        // Recurse down the tree
+        if (value < currentNode.value) {
+            // If less, go left
+            currentNode.left = deleteNode(currentNode.left, value);
+        } else if (value > currentNode.value) {
+            // If more, go right
+            currentNode.right = deleteNode(currentNode.right, value);
         } else {
-            if(node.left==null && node.right==null) {
-                node=null;
-            } else if(node.left==null) {
-                node = node.right;
-            } else if(node.right==null) {
-                node=node.left;
+            // Value is same as current's value, node to delete
+            if (currentNode.left == null && currentNode.right == null) {
+                // Node is a leaf node
+                return null;
+            } else if (currentNode.left == null) {
+                // Node has only right child
+                currentNode = currentNode.right;
+            } else if (currentNode.right == null) {
+                // Node has only left child
+                currentNode = currentNode.left;
             } else {
-                int subTreeMin = minValue(node.right);
-                node.value = subTreeMin;
-                node.right = rDeleteNode(node.right, subTreeMin);
+                // Node has two children
+                int subTreeMin = minValue(currentNode.right);
+                // Replace with min in right subtree
+                currentNode.value = subTreeMin;
+                // Delete the minimum in right subtree
+                currentNode.right = deleteNode(currentNode.right, subTreeMin);
             }
         }
-        return node;
+        // Return the modified tree
+        return currentNode;
     }
 
-    public void inorderTraversal(Node node) {
+    private void inorderTraversal(Node node) {
         if(node==null) return;
+        //Left -> Data -> Right
         inorderTraversal(node.left);
         System.out.print(node.value+" ");
         inorderTraversal(node.right);
     }
 
-    public void preOrderTraversal(Node node) {
+    private void preOrderTraversal(Node node) {
         if(node==null) return;
+        //Data -> Left -> Right
         System.out.print(node.value+" ");
         preOrderTraversal(node.left);
         preOrderTraversal(node.right);
     }
 
-    public void postOrderTraversal(Node node) {
+    private void postOrderTraversal(Node node) {
         if(node==null) return;
+        //Left -> Right -> Data
         postOrderTraversal(node.left);
         postOrderTraversal(node.right);
         System.out.print(node.value+" ");
     }
 
-    public int findHeight(Node root) {
-        if(root==null) return -1;
+    private int findHeight(Node root) {
+        if(root==null) return -1; //Assumption that the lowest node is at height 0
         return Math.max(findHeight(root.left), findHeight(root.right)) + 1;
     }
 
     public boolean isValidBST() {
         ArrayList<Integer> inorderResult = DFSInOrder();
-
+        //Inorder traversal -> Sorted List
         for(int i=0;i<inorderResult.size()-1;i++) {
             if(inorderResult.get(i)>inorderResult.get(i+1)) {
                 return false;
@@ -267,7 +283,6 @@ public class BinarySearchTree {
         return true;
     }
 
-    ArrayList<Integer> resultList = new ArrayList<>();
     public ArrayList<Integer> DFSInOrder() {
         DFSInOrder(root);
         return resultList;
@@ -356,21 +371,82 @@ public class BinarySearchTree {
     }
 
     public ArrayList<Integer> breadthFirstTraversal() {
+        // Initialize currentNode with the root of the tree
+        Node currentNode = root;
+
+        // Create a queue to store nodes for BFS traversal
         Queue<Node> queue = new LinkedList<>();
-        ArrayList<Integer> resultList = new ArrayList<>();
-        Node temp = root;
-        queue.add(temp);
-        while(!queue.isEmpty()) {
-            temp = queue.remove();
-            resultList.add(temp.value);
-            if(temp.left!=null) {
-                queue.add(temp.left);
+
+        // Initialize an ArrayList to store visited node values
+        ArrayList<Integer> results = new ArrayList<>();
+
+        // Add the root node to the queue
+        queue.add(currentNode);
+
+        // Main loop for BFS traversal, continues until the queue is empty
+        while (!queue.isEmpty()) {
+            // Remove the first node from the queue and set it as currentNode
+            currentNode = queue.remove();
+
+            // Add the value of currentNode to the results ArrayList
+            results.add(currentNode.value);
+
+            // If currentNode has a left child, add it to the queue
+            if (currentNode.left != null) {
+                queue.add(currentNode.left);
             }
-            if(temp.right!=null) {
-                queue.add(temp.right);
+
+            // If currentNode has a right child, add it to the queue
+            if (currentNode.right != null) {
+                queue.add(currentNode.right);
             }
         }
-        return resultList;
+
+        // Return the results ArrayList containing the values of visited nodes in BFS order
+        return results;
+    }
+
+    // function to print the zigzag traversal
+    static ArrayList<Integer> zigZagTraversal(Node root) {
+        ArrayList<Integer> res = new ArrayList<>();
+        if (root == null)
+            return res;
+
+        // Current level
+        Stack<Node> s1 = new Stack<>();
+
+        // Next level
+        Stack<Node> s2 = new Stack<>();
+
+        s1.push(root);
+
+        while (!s1.empty() || !s2.empty()) {
+
+            // Print nodes of current level from s1
+            // and push nodes of next level to s2
+            while (!s1.empty()) {
+                Node curr = s1.pop();
+                res.add(curr.value);
+
+                if (curr.left != null)
+                    s2.push(curr.left);
+                if (curr.right != null)
+                    s2.push(curr.right);
+            }
+
+            // Print nodes of current level from s2
+            // and push nodes of next level to s1
+            while (!s2.empty()) {
+                Node curr = s2.pop();
+                res.add(curr.value);
+
+                if (curr.right != null)
+                    s1.push(curr.right);
+                if (curr.left != null)
+                    s1.push(curr.left);
+            }
+        }
+        return res;
     }
 
     public Integer kthSmallest(int k) {
@@ -428,5 +504,7 @@ public class BinarySearchTree {
         bst.sortedArrayToBST(arr);
         System.out.println(bst.root.value);
         System.out.println(bst.isValidBST());
+        System.out.println(bst.breadthFirstTraversal());
+        System.out.println(bst.zigZagTraversal(bst.root));
     }
 }
