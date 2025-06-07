@@ -297,7 +297,6 @@ public class BinarySearchTree {
         DFSInOrder(node.right);
     }
 
-
     private Node sortedArrayToBST(int[] nums, int left, int right) {
         if(left>right) return null;
         int mid = (left+right)/2;
