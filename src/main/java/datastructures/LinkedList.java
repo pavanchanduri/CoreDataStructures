@@ -175,15 +175,27 @@ public class LinkedList {
     }
 
     public void reverse() {
-        Node temp = getHead();
-        head = getTail();
+        // Set temp to the current head of the linked list
+        Node temp = head;
+        // Set the new head to be the current tail
+        head = tail;
+        // Set the new tail to be the previous head (stored in temp)
         tail = temp;
+
+        // Set after to be the next node after the current head
         Node after;
+        // Initialize before to null, as the first node in the reversed list will not have a previous node
         Node before = null;
-        for(int i=0;i<length;i++) {
+
+        // Loop through the linked list, reversing the order of the nodes
+        for (int i = 0; i < length; i++) {
+            // Set after to be the next node after the current node
             after = temp.next;
+            // Set the current node's next pointer to the previous node
             temp.next = before;
+            // Set before to be the current node, as it will be the previous node in the next iteration of the loop
             before = temp;
+            // Set temp to be the next node in the linked list
             temp = after;
         }
     }
@@ -304,6 +316,63 @@ public class LinkedList {
             first = first.next;
         }
         head=dummyNode.next;
+    }
+
+    public void insertionSort() {
+        // If the list has less than 2 elements, it is already sorted
+        if (length < 2) {
+            return;
+        }
+
+        // Start with a sorted list containing only the first element
+        Node sortedListHead = head;
+
+        // Start with the second element in the unsorted list
+        Node unsortedListHead = head.next;
+
+        // Mark the end of the sorted list
+        sortedListHead.next = null;
+
+        // Iterate over the unsorted list
+        while (unsortedListHead != null) {
+
+            // Take the first element in the unsorted list
+            Node current = unsortedListHead;
+
+            // Move to the next element in the unsorted list
+            unsortedListHead = unsortedListHead.next;
+
+            // If the current element is smaller than the first element of the sorted list
+            if (current.value < sortedListHead.value) {
+                // Insert the current element at the beginning of the sorted list
+                current.next = sortedListHead;
+                // Update the sorted list head
+                sortedListHead = current;
+            } else {
+                // Start at the beginning of the sorted list
+                Node searchPointer = sortedListHead;
+
+                // Search for the correct insertion point
+                while (searchPointer.next != null && current.value > searchPointer.next.value) {
+                    // Move to the next element in the sorted list
+                    searchPointer = searchPointer.next;
+                }
+
+                // Insert the current element after searchPointer
+                current.next = searchPointer.next;
+                searchPointer.next = current;
+            }
+        }
+
+        // Update the head of the sorted list
+        head = sortedListHead;
+
+        // Update the tail of the sorted list
+        Node temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+        tail = temp;
     }
 
     public static void main(String[] args) throws Exception {
