@@ -2,7 +2,6 @@ package datastructures;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class Graph {
 
@@ -16,8 +15,8 @@ public class Graph {
         return false;
     }
 
-    public boolean addEdge(String vertex1, String vertex2) {
-        if(vertex1.equals(vertex2)) return false;
+    public void addEdge(String vertex1, String vertex2) {
+        if(vertex1.equals(vertex2)) return;
         if(adjList.get(vertex1)!=null && adjList.get(vertex2)!=null) {
             if(!adjList.get(vertex1).contains(vertex2)) {
                 adjList.get(vertex1).add(vertex2);
@@ -25,9 +24,7 @@ public class Graph {
             if(!adjList.get(vertex2).contains(vertex1)) {
                 adjList.get(vertex2).add(vertex1);
             }
-            return true;
         }
-        return false;
     }
 
     public boolean removeEdge(String vertex1, String vertex2) {
