@@ -234,6 +234,50 @@ public class LinkedList {
         }
     }
 
+    public void merge(LinkedList otherList) {
+        // get the head node of the other linked list
+        Node otherHead = otherList.getHead();
+        // create a dummy node to serve as the head of the merged linked list
+        Node dummy = new Node(0);
+        // create a current node to keep track of the last node in the merged list
+        Node current = dummy;
+
+        // iterate through both input linked lists as long as they are not null
+        while (head != null && otherHead != null) {
+            // compare the values of the head nodes of the two lists
+            if (head.value < otherHead.value) {
+                // append the smaller node to the merged list and
+                //update the head of that list to its next node
+                current.next = head;
+                head = head.next;
+            } else {
+                // append the smaller node to the merged list and
+                //update the head of that list to its next node
+                current.next = otherHead;
+                otherHead = otherHead.next;
+            }
+            // update the "current" node to be the last node in the merged list
+            current = current.next;
+        }
+
+        // if either of the input lists still has nodes,
+        // append them to the end of the merged list
+        if (head != null) {
+            current.next = head;
+        } else {
+            current.next = otherHead;
+            // If current list is empty, update tail to last node of other list
+            // Otherwise, tail remains the last node of the current list
+            tail = otherList.getTail();
+        }
+
+        // update the head of the current list to be the second node
+        // in the merged list (since the first node is the dummy node)
+        head = dummy.next;
+        // update the length of the current list to reflect the merged list
+        length += otherList.getLength();
+    }
+
     /*
     Linked List  3 -> 8 -> 5 -> 10 -> 2 -> 1
     First Partition  0 -> 3 -> 2 -> 1
@@ -394,5 +438,19 @@ public class LinkedList {
         ll.printList();
         ll.partitionList(8);
         ll.printList();
+
+        LinkedList l1 = new LinkedList(1);
+        l1.append(3);
+        l1.append(5);
+        l1.append(7);
+
+        LinkedList l2 = new LinkedList(2);
+        l2.append(4);
+        l2.append(6);
+        l2.append(8);
+
+        l1.merge(l2);
+
+        l1.printAll();
     }
 }

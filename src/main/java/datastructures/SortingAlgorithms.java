@@ -78,6 +78,7 @@ public class SortingAlgorithms {
         }
     }
 
+    //MERGE SORT
     public static int[] mergeSort(int[] array) {
         // Base case: If the input array has only one element, it
         // is already sorted, so return the array as is.
@@ -145,6 +146,38 @@ public class SortingAlgorithms {
         return combined;
     }
 
+    //QUICK SORT
+    private static void swap(int[] array, int firstIndex, int secondIndex) {
+        int temp = array[firstIndex];
+        array[firstIndex] = array[secondIndex];
+        array[secondIndex] = temp;
+    }
+
+    private static int pivot(int[] array, int pivotIndex, int endIndex) {
+        int swapIndex = pivotIndex;
+        for (int i = pivotIndex + 1; i <= endIndex; i++) {
+            if (array[i] < array[pivotIndex]) {
+                swapIndex++;
+                swap(array, swapIndex, i);
+            }
+        }
+        swap(array, pivotIndex, swapIndex);
+
+        return swapIndex;
+    }
+
+    public static void quickSort(int[] array) {
+        quickSortHelper(array, 0, array.length-1);
+    }
+
+    public static void quickSortHelper(int[] arr, int start, int end) {
+        if(start<end) {
+            int pivot = pivot(arr,start,end);
+            quickSortHelper(arr,start,pivot);
+            quickSortHelper(arr,pivot+1,end);
+        }
+    }
+
     public static void main(String[] args) {
 
         int[] myArray = {4,2,6,5,1,3};
@@ -161,5 +194,9 @@ public class SortingAlgorithms {
         int [] sortedArray = mergeSort(originalArray);
         System.out.println( "Original Array: " + Arrays.toString( originalArray ) );
         System.out.println( "\nSorted Array: " + Arrays.toString( sortedArray ) );
+
+        myArray = new int[]{4,6,1,7,3,2,5};
+        quickSort(myArray);
+        System.out.println( "After Quick Sort: "+Arrays.toString( myArray ) );
     }
 }
