@@ -1,20 +1,15 @@
 package datastructures;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HashTable {
 
-    // The default size of the hash table
-    private int size = 7;
-
     // The array of nodes that stores the key-value pairs
-    private Node[] dataMap;
+    private final Node[] dataMap;
 
     // The inner Node class that represents a node in the linked list
     // of values stored at a particular index in the hash table
-    class Node {
+    static class Node {
         String key;
         int value;
         Node next;
@@ -28,6 +23,8 @@ public class HashTable {
     // The constructor that initializes the dataMap array to
     // an array of Node objects with the default size
     public HashTable() {
+        // The default size of the hash table
+        int size = 7;
         dataMap = new Node[size];
     }
 
