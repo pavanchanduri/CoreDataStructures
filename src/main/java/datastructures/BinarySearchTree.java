@@ -449,21 +449,38 @@ public class BinarySearchTree {
     }
 
     public Integer kthSmallest(int k) {
+        // Create an empty stack to keep track of nodes
         Stack<Node> stack = new Stack<>();
+
+        // Start from the root of the BST
         Node node = this.root;
 
+        // Continue as long as there are unprocessed nodes
         while (!stack.isEmpty() || node != null) {
+
+            // Traverse to the leftmost node of the current subtree,
+            // pushing all the nodes onto the stack
             while (node != null) {
                 stack.push(node);
                 node = node.left;
             }
+
+            // Process nodes from the stack when no left children
             node = stack.pop();
+
+            // Decrement k after each processed node
             k -= 1;
+
+            // If k reaches 0, return the current node value
             if (k == 0) {
                 return node.value;
             }
+
+            // Move to the right child after a node has been processed
             node = node.right;
         }
+
+        // Return null if fewer than k nodes in the tree
         return null;
     }
 
