@@ -200,20 +200,72 @@ public class LinkedList {
         }
     }
 
-    public Node findKthNodeFromLast(int k) {
-        Node p1 = head;
-        Node p2 = head;
-        for(int i=0;i<k-1;i++) {
-            if(p2.next==null) {
+    public Node findMiddleNode() {
+        // Initialize slow pointer to the head of the linked list
+        Node slow = head;
+
+        // Initialize fast pointer to the head of the linked list
+        Node fast = head;
+
+        // Traverse the linked list with two pointers: slow and fast
+        // slow moves one node at a time, while fast moves two nodes at a time
+        while (fast != null && fast.next != null) {
+            // Move slow pointer to the next node
+            slow = slow.next;
+
+            // Move fast pointer to the next two nodes
+            fast = fast.next.next;
+        }
+
+        // Return the Node object representing the middle node of the linked list
+        return slow;
+    }
+
+    public boolean hasLoop() {
+        // Initialize slow pointer to the head of the linked list
+        Node slow = head;
+
+        // Initialize fast pointer to the head of the linked list
+        Node fast = head;
+
+        // Traverse the linked list with two pointers: slow and fast
+        // slow moves one node at a time, while fast moves two nodes at a time
+        while (fast != null && fast.next != null) {
+            // Move slow pointer to the next node
+            slow = slow.next;
+
+            // Move fast pointer to the next two nodes
+            fast = fast.next.next;
+
+            // If slow pointer meets fast pointer, then there is a loop in the linked list
+            if (slow == fast) {
+                return true;
+            }
+        }
+
+        // If the loop has not been detected after the traversal, then there is no loop in the linked list
+        return false;
+    }
+
+    public Node findKthFromEnd(int k) {
+        Node slow = head; // Initialize slow pointer at head
+        Node fast = head; // Initialize fast pointer at head
+
+        // Move fast pointer k steps ahead
+        for (int i = 0; i < k; i++) {
+            if (fast == null) { // If k is out of bounds, return null
                 return null;
             }
-            p2=p2.next;
+            fast = fast.next; // Move the fast pointer to the next node
         }
-        while(p2.next!=null) {
-            p1=p1.next;
-            p2=p2.next;
+
+        // Move both pointers until fast reaches the end
+        while (fast != null) {
+            slow = slow.next; // Move the slow pointer to the next node
+            fast = fast.next; // Move the fast pointer to the next node
         }
-        return p1;
+
+        return slow; // Return the kth node from the end (slow pointer)
     }
 
     public void removeDuplicates() {
@@ -285,81 +337,141 @@ public class LinkedList {
     Combined 3 -> 2 -> 1 -> 8 -> 5 -> 10
      */
     public void partitionList(int x) {
+        // Step 1: Check for an empty list.
+        // If the list is empty, there is nothing
+        // to partition, so we exit the method.
         if (head == null) return;
+
+        // Step 2: Create two dummy nodes.
+        // These dummy nodes act as placeholders
+        // to simplify list manipulation.
         Node dummy1 = new Node(0);
         Node dummy2 = new Node(0);
+
+        // Step 3: Initialize pointers for new lists.
+        // 'prev1' and 'prev2' will track the end nodes of
+        // the two lists that are being created.
         Node prev1 = dummy1;
         Node prev2 = dummy2;
+
+        // Step 4: Start with the head of the original list.
         Node current = head;
+
+        // Step 5: Iterate through the original list.
         while (current != null) {
+
+            // Step 6: Compare current node value with 'x'.
+            // Nodes are partitioned based on their value
+            // being less than or greater than/equal to 'x'.
+
+            // Step 6.1: If value is less than 'x',
+            // add node to the first list.
             if (current.value < x) {
-                prev1.next = current;
-                prev1 = current;
+                prev1.next = current;  // Link node to the end of the first list.
+                prev1 = current;       // Update the end pointer of the first list.
             } else {
-                prev2.next = current;
-                prev2 = current;
+                // Step 6.2: If value is greater or equal,
+                // add node to the second list.
+                prev2.next = current;  // Link node to the end of the second list.
+                prev2 = current;       // Update the end pointer of the second list.
             }
+
+            // Move to the next node in the original list.
             current = current.next;
         }
+
+        // Step 7: Terminate the second list.
+        // This prevents cycles in the list.
         prev2.next = null;
+
+        // Step 8: Connect the two lists.
+        // The first list is followed by the second list.
         prev1.next = dummy2.next;
+
+        // Step 9: Update the head of the original list.
+        // The head now points to the start of the first list.
         head = dummy1.next;
     }
 
     public void reverseBetween(int startIndex, int endIndex) {
-        if(head==null) return;
+        // Check: If linked list is empty, nothing to reverse.
+        // Exit the method.
+        if (head == null) return;
+
+        // Create a 'dummyNode' that precedes the head.
+        // Simplifies handling edge cases.
         Node dummyNode = new Node(0);
         dummyNode.next = head;
-        Node previousNode = dummyNode; //track of the node before the segment to be reversed
-        for(int i=0;i<startIndex;i++) {
-            previousNode = previousNode.next; //Position this just before the start node of the segment
+
+        // 'previousNode' is used to navigate to the node
+        // right before our sublist begins.
+        Node previousNode = dummyNode;
+
+        // Move 'previousNode' to node just before sublist.
+        for (int i = 0; i < startIndex; i++) {
+            previousNode = previousNode.next;
         }
+
+        // 'currentNode' marks the first node of sublist.
         Node currentNode = previousNode.next;
-        for(int i=0;i<endIndex-startIndex;i++) {
-            Node nodeToMove = currentNode.next; //Node to cut from the segment and place at the front
+
+        // Loop reverses the section from startIndex to endIndex.
+        for (int i = 0; i < endIndex - startIndex; i++) {
+
+            // 'nodeToMove' is the node we'll move to sublist start.
+            Node nodeToMove = currentNode.next;
+
+            // Detach 'nodeToMove' from its current position.
             currentNode.next = nodeToMove.next;
+
+            // Attach 'nodeToMove' at the beginning of the sublist.
             nodeToMove.next = previousNode.next;
+
+            // Move 'nodeToMove' to the start of our sublist.
             previousNode.next = nodeToMove;
         }
+
+        // Adjust 'head' if the first node was part of sublist.
         head = dummyNode.next;
     }
 
     public void swapPairs() {
-        //   +===================================================+
-        //   |                                                   |
-        //   | Description:                                      |
-        //   | - Swaps every two adjacent nodes in the linked    |
-        //   |   list.                                           |
-        //   | - The method modifies the list in place.          |
-        //   |                                                   |
-        //   | Behavior:                                         |
-        //   | - A dummy node is used to simplify swapping the   |
-        //   |   first pair.                                     |
-        //   | - In each iteration, two nodes (`first` and       |
-        //   |   `second`) are swapped by adjusting pointers.    |
-        //   | - The `previous` pointer helps reconnect the      |
-        //   |   swapped pairs to the rest of the list.          |
-        //   | - The `first` pointer then moves forward two      |
-        //   |   nodes at a time.                                |
-        //   | - At the end, `head` is updated to point to the   |
-        //   |   new first node.                                 |
-        //   +===================================================+
 
-        Node dummyNode = new Node(0);
-        dummyNode.next = head;
-        Node previous = dummyNode;
+        // Create a dummy node pointing to the head
+        // This simplifies edge cases, like swapping the first pair
+        Node dummy = new Node(0);
+        dummy.next = head;
+
+        // previous tracks the node before the current pair
+        Node previous = dummy;
+
+        // first is the first node in the pair to be swapped
         Node first = head;
-        while(first!=null&&first.next!=null) {
+
+        // Loop while there are at least two nodes to swap
+        while (first != null && first.next != null) {
+
+            // second is the second node in the pair
             Node second = first.next;
-            //Swap the nodes
-            first.next = second.next;
-            second.next = first;
+
+            // Point previous to second, starting the swap
             previous.next = second;
-            //Move pointers
+
+            // Point first to the node after the second
+            first.next = second.next;
+
+            // Point second to first, completing the swap
+            second.next = first;
+
+            // Move previous to first (end of swapped pair)
             previous = first;
+
+            // Move first to the next pair's first node
             first = first.next;
         }
-        head=dummyNode.next;
+
+        // Reset head to point to the new start of the list
+        head = dummy.next;
     }
 
     public void insertionSort() {
