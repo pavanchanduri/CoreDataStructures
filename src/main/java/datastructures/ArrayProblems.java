@@ -1,6 +1,8 @@
 package datastructures;
 
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.PriorityQueue;
 
 
 public class ArrayProblems {
@@ -74,6 +76,30 @@ public class ArrayProblems {
         }
     }
 
+    public static int findKthMaximumElement(int[] arr, int k) {
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>();
+        for (int j : arr) {
+            minHeap.add(j);
+
+            if(minHeap.size()>k) {
+                minHeap.poll();
+            }
+        }
+        return minHeap.peek();
+    }
+
+    public static int findKthMinimumElement(int[] arr, int k) {
+        PriorityQueue<Integer> maxHeap = new PriorityQueue<>(Comparator.reverseOrder());
+        for (int j : arr) {
+            maxHeap.add(j);
+
+            if(maxHeap.size()>k) {
+                maxHeap.poll();
+            }
+        }
+        return maxHeap.peek();
+    }
+
     // Driver code
     public static void main(String[] args) {
         int[] a = { 3, 9, 2, 3, 1, 7, 2, 3, 5 };
@@ -88,6 +114,10 @@ public class ArrayProblems {
         int[] array = {1,2,3,4,5,6,7,8,9};
         rotate(array, k);
         System.out.println(Arrays.toString(array));
+
+        int[] arr = {10,3,4,9,8,6,11,2,1};
+        System.out.println(findKthMaximumElement(arr, 3));
+        System.out.println(findKthMinimumElement(arr, 4));
 
     }
 }

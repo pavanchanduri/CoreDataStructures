@@ -444,6 +444,9 @@ public class DoublyLinkedList {
         DoublyLinkedList dll = new DoublyLinkedList(3);
         dll.append(8).append(5).append(10).append(2).append(1);
         dll.printList();
+        dll.reverse();
+        dll.printList();
+        dll.reverse();
         dll.set(2,5);
         dll.printList();
         System.out.println(dll.isPalindrome());
