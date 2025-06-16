@@ -521,6 +521,6 @@ public class BinarySearchTree {
         System.out.println(bst.root.value);
         System.out.println(bst.isValidBST());
         System.out.println(bst.breadthFirstTraversal());
-        System.out.println(bst.zigZagTraversal(bst.root));
+        System.out.println(BinarySearchTree.zigZagTraversal(bst.root));
     }
 }

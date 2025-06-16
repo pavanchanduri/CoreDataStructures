@@ -138,7 +138,7 @@ public class HashTable {
         return hash;
     }
 
-    public ArrayList keys() {
+    public ArrayList<String> keys() {
         // Create a new ArrayList to hold the keys
         ArrayList<String> allKeys = new ArrayList<>();
 

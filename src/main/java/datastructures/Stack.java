@@ -10,27 +10,27 @@ public class Stack<T> {
     5. Peek -> return the first node
     6. This way all operations are O(1)
      */
-    private Node top;
+    private Node<T> top;
     private int height;
-
+    
     public Stack() {}
-
-    public Stack(Object value) {
-        top = new Node(value);
+    
+    public Stack(T value) {
+        top = new Node<>(value);
         height = 1;
     }
-
-    static class Node {
-        Object value;
-        Node next;
-
-        public <T> Node(T value) {
+    
+    static class Node<T> {
+        T value;
+        Node<T> next;
+    
+        public Node(T value) {
             this.value = value;
         }
     }
 
-    public <T> void push(T value) {
-        Node newNode = new Node(value);
+    public void push(T value) {
+        Node<T> newNode = new Node<>(value);
         if (top != null) {
             newNode.next = top;
         }
@@ -42,9 +42,9 @@ public class Stack<T> {
         if(top == null) {
             throw new Exception("Stack is Empty");
         } else {
-            Node temp = top;
+            Node<T> temp = top;
             while(temp!=null) {
-                if(temp.value == value) {
+                if(temp.value.equals(value)) {
                     return true;
                 }
                 temp = temp.next;
@@ -54,16 +54,16 @@ public class Stack<T> {
     }
 
     public T getTop() {
-        return (T) top.value;
+        return top.value;
     }
 
     public int getHeight() {
         return height;
     }
 
-    public Node pop() throws Exception {
-        Node temp;
-        Node result;
+    public Node<T> pop() throws Exception {
+        Node<T> temp;
+        Node<T> result;
         if(top==null) {
             throw new Exception("Stack is Empty");
         } else if(height==1) {
@@ -81,11 +81,11 @@ public class Stack<T> {
     }
 
     public T peek() throws Exception {
-
+    
         if(height==0) {
             throw new Exception("Stack is Empty");
         } else {
-            return (T) top.value;
+            return top.value;
         }
     }
 
@@ -97,7 +97,7 @@ public class Stack<T> {
         if(top==null) {
             System.out.println("Stack is Empty");
         } else {
-            Node temp = top;
+            Node<T> temp = top;
             System.out.print("top -> ");
             while(temp.next!=null) {
                 System.out.print(temp.value+" -> ");

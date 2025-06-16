@@ -17,7 +17,7 @@ import java.util.PriorityQueue;
 
 public class Heap {
 
-    private static List<Integer> heap;
+    private List<Integer> heap;
 
     public Heap() {
         this.heap = new ArrayList<>();
